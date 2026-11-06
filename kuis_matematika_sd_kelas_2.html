@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Matematika Kelas 2 SD</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter & Bubblegum Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #06b6d4 100%);
+            min-height: 100vh;
+        }
+        .font-fun {
+            font-family: 'Bubblegum Sans', cursive, sans-serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-option {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-option:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-option:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4 md:p-6 min-h-screen text-gray-800">
+
+    <!-- Container Utama -->
+    <div class="w-full max-w-2xl glass-card rounded-3xl shadow-2xl overflow-hidden my-auto border-4 border-white/50">
+        
+        <!-- HEADER KUIS -->
+        <div class="bg-gradient-to-r from-amber-400 via-orange-400 to-pink-500 p-6 text-white text-center relative overflow-hidden">
+            <div class="relative z-10">
+                <h1 class="text-3xl md:text-4xl font-extrabold font-fun tracking-wider drop-shadow-md">
+                    <i class="fa-solid fa-shapes mr-2"></i>Kuis Matematika SD Kelas 2
+                </h1>
+                <p class="text-white/90 text-sm md:text-base mt-1 font-medium">Ayo hitung dan jawab soalnya dengan benar! 🚀</p>
+            </div>
+            <!-- Hiasan Dekoratif -->
+            <div class="absolute -top-6 -left-6 w-20 h-20 bg-white/20 rounded-full blur-xl"></div>
+            <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-yellow-300/30 rounded-full blur-lg"></div>
+        </div>
+
+        <!-- LAYAR UTAMA: AWAL (START SCREEN) -->
+        <div id="start-screen" class="p-6 md:p-10 text-center space-y-6">
+            <div class="w-28 h-28 mx-auto bg-gradient-to-tr from-amber-100 to-yellow-300 rounded-full flex items-center justify-center shadow-inner animate-pulse-subtle">
+                <i class="fa-solid fa-calculator text-5xl text-amber-600"></i>
+            </div>
+            
+            <div class="space-y-2">
+                <h2 class="text-2xl font-bold text-gray-800">Siap Berlatih Matematika?</h2>
+                <p class="text-gray-600 text-sm md:text-base max-w-md mx-auto">
+                    Tersedia bank soal <b>100 Soal</b> khusus matematika SD Kelas 2! Setiap sesi akan dipilih <b>10 soal acak</b>.
+                </p>
+            </div>
+
+            <!-- Form Input Nama -->
+            <div class="max-w-md mx-auto text-left space-y-2">
+                <label for="student-name" class="block text-sm font-bold text-gray-700">
+                    <i class="fa-solid fa-user text-indigo-500 mr-1"></i> Masukkan Nama Kamu:
+                </label>
+                <input type="text" id="student-name" placeholder="Contoh: Budi / Siti" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none font-semibold text-gray-800 shadow-sm transition">
+                <p id="name-error" class="text-red-500 text-xs font-semibold hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Harap isi nama kamu terlebih dahulu!</p>
+            </div>
+
+            <div class="bg-amber-50 rounded-2xl p-4 text-left max-w-md mx-auto border border-amber-200/60 text-sm space-y-2">
+                <div class="flex items-center text-amber-800 font-semibold mb-1">
+                    <i class="fa-solid fa-circle-info mr-2"></i> Petunjuk Kuis:
+                </div>
+                <p class="text-amber-900 flex items-center"><i class="fa-solid fa-shuffle text-purple-500 mr-2"></i> 10 soal acak tiap sesi permainan.</p>
+                <p class="text-amber-900 flex items-center"><i class="fa-solid fa-clock text-blue-500 mr-2"></i> Waktu 30 detik untuk tiap soal.</p>
+                <p class="text-amber-900 flex items-center"><i class="fa-solid fa-award text-emerald-500 mr-2"></i> Pembahasan lengkap di akhir kuis.</p>
+            </div>
+
+            <button onclick="startQuizWithValidation()" class="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-lg rounded-2xl shadow-lg hover:shadow-xl transition transform active:scale-95 cursor-pointer">
+                Mulai Kuis <i class="fa-solid fa-play ml-2"></i>
+            </button>
+        </div>
+
+        <!-- LAYAR KUIS (QUIZ SCREEN) -->
+        <div id="quiz-screen" class="p-6 md:p-8 space-y-6 hidden">
+            <!-- Header Kuis: Indikator & Timer -->
+            <div class="flex items-center justify-between">
+                <span id="question-tracker" class="text-xs font-bold text-gray-500 uppercase tracking-wider bg-gray-100 px-3 py-1.5 rounded-full border border-gray-200">
+                    Soal 1 dari 10
+                </span>
+                <div id="timer-display" class="flex items-center text-amber-600 bg-amber-50 px-3 py-1 rounded-full text-xs font-semibold border border-amber-200">
+                    <i class="fa-regular fa-clock mr-1.5"></i> 30s
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                <div id="progress-bar" class="bg-gradient-to-r from-amber-400 to-pink-500 h-full w-0 transition-all duration-300"></div>
+            </div>
+
+            <!-- Card Soal -->
+            <div class="bg-indigo-50/50 p-5 md:p-6 rounded-2xl border border-indigo-100 min-h-[110px] flex items-center justify-center">
+                <h2 id="question-text" class="text-lg md:text-xl font-bold text-gray-800 text-center leading-relaxed">
+                    <!-- Teks Soal Dimuat di Sini -->
+                </h2>
+            </div>
+
+            <!-- Opsi Jawaban (4 Pilihan) -->
+            <div id="options-container" class="grid grid-cols-1 gap-3">
+                <!-- Opsi tombol A, B, C, D di-generate JS -->
+            </div>
+
+            <!-- Box Feedback & Tombol Lanjut -->
+            <div id="feedback-box" class="hidden p-4 rounded-xl flex items-center justify-between text-sm font-bold">
+                <div id="feedback-text" class="flex items-center"></div>
+                <button onclick="nextQuestion()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow transition transform active:scale-95 text-xs md:text-sm font-bold flex items-center">
+                    Lanjut <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- LAYAR HASIL (RESULT SCREEN) -->
+        <div id="result-screen" class="p-6 md:p-8 text-center space-y-6 hidden">
+            <div class="w-24 h-24 mx-auto bg-amber-100 rounded-full flex items-center justify-center shadow-inner">
+                <i class="fa-solid fa-trophy text-5xl text-amber-500"></i>
+            </div>
+
+            <div class="space-y-1">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800">
+                    Selamat, <span id="display-name" class="text-indigo-600">Siswa</span>! 🎉
+                </h2>
+                <p class="text-gray-500 text-sm">Kamu telah menyelesaikan 10 soal acak matematika!</p>
+            </div>
+
+            <!-- Box Nilai -->
+            <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 max-w-sm mx-auto shadow-sm">
+                <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Skor Akhir Kamu</div>
+                <div id="final-score" class="text-5xl font-black text-indigo-600">0</div>
+                <div id="score-message" class="text-sm font-semibold text-gray-700 mt-2">Hebat Sekali!</div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <button onclick="startNewQuizRound()" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-xl shadow transition transform active:scale-95 text-sm flex items-center justify-center">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> Soal Baru (Main Lagi)
+                </button>
+                <button onclick="toggleReview()" class="px-6 py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl border border-indigo-200 transition text-sm flex items-center justify-center">
+                    <i class="fa-solid fa-list-check mr-2"></i> Lihat Pembahasan
+                </button>
+            </div>
+
+            <!-- Container Pembahasan Soal -->
+            <div id="review-container" class="hidden text-left space-y-4 pt-4 border-t border-gray-200 max-h-96 overflow-y-auto pr-2">
+                <h3 class="font-bold text-gray-800 text-base mb-2"><i class="fa-solid fa-book-open text-indigo-500 mr-2"></i> Rincian Pembahasan:</h3>
+                <div id="review-list" class="space-y-3">
+                    <!-- Item pembahasan di-generate oleh JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT UTAMA KUIS (100 SOAL BANK & LOGIKA) -->
+    <script>
+        // 100 BANK SOAL MATEMATIKA SD KELAS 2
+        const bankSoal = [
+            // Penjumlahan & Pengurangan
+            { q: "Hasil dari 25 + 14 adalah...", options: ["37", "39", "38", "40"], answer: 1, explanation: "25 + 14 = 39." },
+            { q: "Berapakah hasil dari 48 - 15?", options: ["33", "35", "32", "30"], answer: 0, explanation: "48 - 15 = 33." },
+            { q: "36 + 27 = ...", options: ["61", "62", "63", "64"], answer: 2, explanation: "36 + 27 = 63." },
+            { q: "Hasil dari 75 - 28 adalah...", options: ["47", "46", "48", "57"], answer: 0, explanation: "75 - 28 = 47." },
+            { q: "Hasil dari 120 + 35 adalah...", options: ["145", "155", "150", "160"], answer: 1, explanation: "120 + 35 = 155." },
+            { q: "Berapa hasil dari 250 - 40?", options: ["210", "200", "220", "190"], answer: 0, explanation: "250 - 40 = 210." },
+            { q: "Ibu membeli 15 telur, lalu membeli lagi 12 telur. Berapa jumlah telur Ibu?", options: ["25", "27", "28", "30"], answer: 1, explanation: "15 + 12 = 27 telur." },
+            { q: "Budi memiliki 30 kelereng. Diberikan ke Ani 12 kelereng. Sisa kelereng Budi adalah...", options: ["18", "16", "20", "15"], answer: 0, explanation: "30 - 12 = 18 kelereng." },
+            { q: "Nilai dari 54 + 36 adalah...", options: ["80", "90", "88", "92"], answer: 1, explanation: "54 + 36 = 90." },
+            { q: "85 - 37 = ...", options: ["48", "49", "47", "58"], answer: 0, explanation: "85 - 37 = 48." },
+
+            // Nilai Tempat (Ratusan, Puluhan, Satuan)
+            { q: "Pada bilangan 245, angka 4 menempati nilai...", options: ["Satuan", "Puluhan", "Ratusan", "Ribuan"], answer: 1, explanation: "2 = Ratusan, 4 = Puluhan, 5 = Satuan." },
+            { q: "Pada bilangan 381, angka yang menempati nilai ratusan adalah...", options: ["1", "8", "3", "0"], answer: 2, explanation: "Angka paling depan (3) adalah ratusan." },
+            { q: "Lambang bilangan dari 'Tiga ratus empat puluh lima' adalah...", options: ["345", "354", "435", "543"], answer: 0, explanation: "Tiga ratus (300) + empat puluh (40) + lima (5) = 345." },
+            { q: "Nama bilangan dari 408 adalah...", options: ["Empat ratus delapan puluh", "Empat ratus delapan", "Empat puluh delapan", "Empat ribu delapan"], answer: 1, explanation: "408 dibaca Empat ratus delapan." },
+            { q: "2 ratusan + 5 puluhan + 3 satuan = ...", options: ["235", "523", "253", "352"], answer: 2, explanation: "200 + 50 + 3 = 253." },
+            { q: "400 + 60 + 9 = ...", options: ["469", "496", "649", "964"], answer: 0, explanation: "400 + 60 + 9 = 469." },
+            { q: "Angka 7 pada bilangan 572 mempunyai nilai...", options: ["7", "700", "70", "7000"], answer: 2, explanation: "Angka 7 ada di posisi puluhan, nilainya 70." },
+            { q: "Bilangan yang terdiri dari 6 ratusan, 0 puluhan, dan 4 satuan adalah...", options: ["640", "604", "406", "644"], answer: 1, explanation: "600 + 0 + 4 = 604." },
+            { q: "Pada bilangan 192, angka 2 menempati nilai...", options: ["Ratusan", "Puluhan", "Satuan", "Ribuan"], answer: 2, explanation: "Angka paling belakang (2) adalah satuan." },
+            { q: "5 ratusan + 8 satuan = ...", options: ["580", "508", "850", "58"], answer: 1, explanation: "500 + 0 + 8 = 508." },
+
+            // Membandingkan & Mengurutkan Bilangan
+            { q: "Tanda yang tepat untuk membandingkan 156 ... 165 adalah...", options: [">", "<", "=", "+"], answer: 1, explanation: "156 lebih kecil dari 165 (<)." },
+            { q: "Isilah titik-titik berikut: 320 ... 299", options: [">", "<", "=", "-"], answer: 0, explanation: "320 lebih besar dari 299 (>)." },
+            { q: "Urutan bilangan dari yang terkecil: 125, 110, 140 adalah...", options: ["140, 125, 110", "110, 125, 140", "125, 110, 140", "110, 140, 125"], answer: 1, explanation: "Urutan dari terkecil: 110, 125, 140." },
+            { q: "Urutan bilangan dari yang terbesar: 215, 310, 195 adalah...", options: ["310, 215, 195", "195, 215, 310", "310, 195, 215", "215, 310, 195"], answer: 0, explanation: "Urutan dari terbesar: 310, 215, 195." },
+            { q: "Bilangan di antara 149 dan 151 adalah...", options: ["148", "150", "152", "153"], answer: 1, explanation: "Bilangan di antara 149 dan 151 adalah 150." },
+            { q: "Manakah bilangan yang lebih besar dari 275?", options: ["270", "274", "280", "269"], answer: 2, explanation: "280 lebih besar dari 275." },
+            { q: "Manakah bilangan yang lebih kecil dari 180?", options: ["185", "179", "190", "200"], answer: 1, explanation: "179 lebih kecil dari 180." },
+            { q: "Bilangan loncat 2 setelah 12 adalah...", options: ["13", "14", "15", "16"], answer: 1, explanation: "12 + 2 = 14." },
+            { q: "Lanjutan pola bilangan loncat 5 berikut: 5, 10, 15, ... adalah...", options: ["18", "20", "22", "25"], answer: 1, explanation: "15 + 5 = 20." },
+            { q: "Pola bilangan loncat 10: 20, 30, 40, ...", options: ["45", "50", "55", "60"], answer: 1, explanation: "40 + 10 = 50." },
+
+            // Perkalian Dasar (Konsep Penjumlahan Berulang)
+            { q: "Bentuk penjumlahan berulang dari 3 x 4 adalah...", options: ["3 + 3 + 3", "4 + 4 + 4", "3 + 4", "4 + 4 + 4 + 4"], answer: 1, explanation: "3 x 4 artinya 4 dijumlahkan sebanyak 3 kali (4 + 4 + 4)." },
+            { q: "Hasil dari 5 x 2 adalah...", options: ["7", "10", "12", "15"], answer: 1, explanation: "5 x 2 = 2 + 2 + 2 + 2 + 2 = 10." },
+            { q: "4 + 4 + 4 + 4 + 4 jika ditulis ke dalam bentuk perkalian adalah...", options: ["4 x 5", "5 x 4", "5 x 5", "4 x 4"], answer: 1, explanation: "Angka 4 ada 5 kali, jadi 5 x 4." },
+            { q: "Hasil dari 4 x 3 adalah...", options: ["7", "10", "12", "14"], answer: 2, explanation: "4 x 3 = 12." },
+            { q: "Semua bilangan jika dikalikan dengan 1 hasilnya adalah...", options: ["Nol", "Bilangan itu sendiri", "Satu", "Dua"], answer: 1, explanation: "Semua bilangan dikali 1 hasilnya tetap bilangan itu sendiri." },
+            { q: "Hasil dari 6 x 0 adalah...", options: ["6", "0", "1", "60"], answer: 1, explanation: "Semua bilangan jika dikalikan 0 hasilnya adalah 0." },
+            { q: "Ada 3 piring, setiap piring berisi 5 kue. Jumlah seluruh kue adalah...", options: ["8", "12", "15", "18"], answer: 2, explanation: "3 x 5 = 15 kue." },
+            { q: "Hasil dari 2 x 8 adalah...", options: ["16", "14", "18", "12"], answer: 0, explanation: "2 x 8 = 16." },
+            { q: "Hasil dari 5 x 5 adalah...", options: ["20", "25", "30", "15"], answer: 1, explanation: "5 x 5 = 25." },
+            { q: "Hasil dari 3 x 6 adalah...", options: ["15", "18", "21", "24"], answer: 1, explanation: "3 x 6 = 18." },
+
+            // Pembagian Sederhana (Konsep Pengurangan Berulang)
+            { q: "Bentuk pengurangan berulang dari 12 : 4 adalah...", options: ["12 - 4 - 4 - 4 = 0", "12 - 4 - 4 = 0", "12 - 6 - 6 = 0", "12 - 3 - 3 - 3 - 3 = 0"], answer: 0, explanation: "12 dikurangi 4 sebanyak 3 kali hingga 0." },
+            { q: "Hasil dari 10 : 2 adalah...", options: ["4", "5", "6", "8"], answer: 1, explanation: "10 : 2 = 5." },
+            { q: "Hasil dari 15 : 3 adalah...", options: ["3", "4", "5", "6"], answer: 2, explanation: "15 : 3 = 5." },
+            { q: "Ada 20 permen dibagikan kepada 4 anak secara merata. Tiap anak mendapat...", options: ["4 permen", "5 permen", "6 permen", "10 permen"], answer: 1, explanation: "20 : 4 = 5 permen." },
+            { q: "Hasil dari 16 : 4 adalah...", options: ["4", "3", "5", "6"], answer: 0, explanation: "16 : 4 = 4." },
+            { q: "Hasil dari 18 : 2 adalah...", options: ["7", "8", "9", "10"], answer: 2, explanation: "18 : 2 = 9." },
+            { q: "Hasil dari 25 : 5 adalah...", options: ["4", "5", "6", "7"], answer: 1, explanation: "25 : 5 = 5." },
+            { q: "Semua bilangan jika dibagi dengan 1 hasilnya adalah...", options: ["1", "0", "Bilangan itu sendiri", "Dua"], answer: 2, explanation: "Misal: 5 : 1 = 5." },
+            { q: "Hasil dari 14 : 2 adalah...", options: ["6", "7", "8", "9"], answer: 1, explanation: "14 : 2 = 7." },
+            { q: "Hasil dari 30 : 5 adalah...", options: ["5", "6", "7", "8"], answer: 1, explanation: "30 : 5 = 6." },
+
+            // Waktu & Jam
+            { q: "Jarum pendek menunjuk angka 7, jarum panjang menunjuk angka 12. Dibaca pukul...", options: ["Tujuh", "Dua belas", "Enam", "Tujuh belas"], answer: 0, explanation: "Jarum pendek menunjukkan jam (pukul 7)." },
+            { q: "Pukul 09.00 malam jika ditulis dalam format 24 jam adalah pukul...", options: ["09.00", "19.00", "21.00", "22.00"], answer: 2, explanation: "9 + 12 = 21.00." },
+            { q: "Satu jam ada berapa menit?", options: ["30 menit", "50 menit", "60 menit", "100 menit"], answer: 2, explanation: "1 jam = 60 menit." },
+            { q: "Jarum panjang menunjuk angka 6 berarti lewat...", options: ["15 menit", "30 menit", "45 menit", "60 menit"], answer: 1, explanation: "Angka 6 pada jarum panjang menandakan 30 menit." },
+            { q: "Kegiatan dimulai pukul 08.00 dan selesai pukul 10.00. Lama kegiatan adalah...", options: ["1 jam", "2 jam", "3 jam", "4 jam"], answer: 1, explanation: "10 - 8 = 2 jam." },
+            { q: "Pukul 14.00 sama dengan pukul...", options: ["2 siang", "3 siang", "4 sore", "1 siang"], answer: 0, explanation: "14.00 - 12.00 = pukul 2 siang." },
+            { q: "Jarum pendek di angka 3, jarum panjang di angka 12. Menunjukkan pukul...", options: ["03.00", "12.00", "12.03", "03.30"], answer: 0, explanation: "Pukul 03.00 tepat." },
+            { q: "Dua jam setelah pukul 07.00 adalah pukul...", options: ["08.00", "09.00", "10.00", "11.00"], answer: 1, explanation: "7 + 2 = pukul 09.00." },
+            { q: "Tiga jam sebelum pukul 12.00 adalah pukul...", options: ["08.00", "09.00", "10.00", "11.00"], answer: 1, explanation: "12 - 3 = pukul 09.00." },
+            { q: "Setengah jam sama dengan...", options: ["15 menit", "30 menit", "45 menit", "60 menit"], answer: 1, explanation: "Setengah dari 60 menit adalah 30 menit." },
+
+            // Bangun Datar & Bangun Ruang Sederhana
+            { q: "Bangun datar yang memiliki 3 sisi dan 3 sudut adalah...", options: ["Persegi", "Segitiga", "Lingkaran", "Persegi Panjang"], answer: 1, explanation: "Segitiga memiliki 3 sisi dan 3 titik sudut." },
+            { q: "Jumlah sisi pada bangun persegi adalah...", options: ["2", "3", "4", "5"], answer: 2, explanation: "Persegi memiliki 4 sisi yang sama panjang." },
+            { q: "Bangun datar yang tidak memiliki titik sudut adalah...", options: ["Segitiga", "Persegi", "Lingkaran", "Trapesium"], answer: 2, explanation: "Lingkaran hanya memiliki 1 sisi melengkung dan tidak ber sudut." },
+            { q: "Benda yang berbentuk lingkaran adalah...", options: ["Buku", "Roda sepeda", "Pintu", "Penggaris segitiga"], answer: 1, explanation: "Roda sepeda berbentuk lingkaran." },
+            { q: "Jumlah sudut pada persegi panjang adalah...", options: ["3", "4", "5", "6"], answer: 1, explanation: "Persegi panjang memiliki 4 titik sudut siku-siku." },
+            { q: "Benda yang berbentuk tabung di bawah ini adalah...", options: ["Kotak sepatu", "Kaleng susu", "Kelereng", "Piramida"], answer: 1, explanation: "Kaleng susu berbentuk tabung." },
+            { q: "Benda yang berbentuk kubus adalah...", options: ["Dadu", "Bola basket", "Pensil", "Atap rumah"], answer: 0, explanation: "Dadu berbentuk kubus." },
+            { q: "Jumlah sisi pada bangun segitiga adalah...", options: ["2", "3", "4", "5"], answer: 1, explanation: "Segitiga memiliki 3 sisi." },
+            { q: "Atap rumah biasanya berbentuk bangun datar...", options: ["Lingkaran", "Segitiga", "Persegi", "Oval"], answer: 1, explanation: "Atap rumah umum berbentuk segitiga." },
+            { q: "Pintu rumah umumnya berbentuk...", options: ["Segitiga", "Lingkaran", "Persegi panjang", "Trapesium"], answer: 2, explanation: "Pintu umumnya berbentuk persegi panjang." },
+
+            // Pengukuran Panjang & Berat
+            { q: "Alat untuk mengukur panjang benda adalah...", options: ["Timbangan", "Penggaris", "Jam", "Termometer"], answer: 1, explanation: "Penggaris digunakan untuk mengukur panjang." },
+            { q: "Alat untuk mengukur berat benda adalah...", options: ["Meteran", "Timbangan", "Penggaris", "Stopwatch"], answer: 1, explanation: "Timbangan digunakan untuk mengukur berat." },
+            { q: "1 meter sama dengan berapa sentimeter (cm)?", options: ["10 cm", "50 cm", "100 cm", "1000 cm"], answer: 2, explanation: "1 m = 100 cm." },
+            { q: "2 meter = ... cm", options: ["20 cm", "200 cm", "2000 cm", "250 cm"], answer: 1, explanation: "2 x 100 = 200 cm." },
+            { q: "Satuan untuk mengukur berat gula adalah...", options: ["Meter", "Kilogram (kg)", "Liter", "Centimeter"], answer: 1, explanation: "Berat diukur dengan satuan gram atau kilogram (kg)." },
+            { q: "Manakah yang lebih berat: 1 kg besi atau 1 kg kapas?", options: ["Besi", "Kapas", "Sama berat", "Tidak tahu"], answer: 2, explanation: "Keduanya sama-sama 1 kg." },
+            { q: "300 cm sama dengan berapa meter?", options: ["3 m", "30 m", "300 m", "0.3 m"], answer: 0, explanation: "300 : 100 = 3 m." },
+            { q: "Alat untuk mengukur panjang kain di penjahit adalah...", options: ["Penggaris kecil", "Meteran pita", "Timbangan", "Jam dinding"], answer: 1, explanation: "Penjahit menggunakan meteran pita/kain." },
+            { q: "Pensil dipanjangkan 10 cm, penghapus 3 cm. Benda yang lebih panjang adalah...", options: ["Penghapus", "Pensil", "Sama panjang", "Semua salah"], answer: 1, explanation: "10 cm lebih panjang daripada 3 cm." },
+            { q: "5 kg = ... gram", options: ["50 gram", "500 gram", "5000 gram", "50.000 gram"], answer: 2, explanation: "1 kg = 1000 gram, maka 5 kg = 5000 gram." },
+
+            // Pecahan Sederhana
+            { q: "Satu kue dibagi menjadi 2 bagian sama besar. Setiap bagian bernilai...", options: ["1/2", "1/3", "1/4", "2/2"], answer: 0, explanation: "1 dari 2 bagian bernilai setengah (1/2)." },
+            { q: "Satu semangka dibagi menjadi 4 bagian sama besar. Satu bagian bernilai...", options: ["1/2", "1/3", "1/4", "1/5"], answer: 2, explanation: "1 dari 4 bagian bernilai seperempat (1/4)." },
+            { q: "Pecahan 1/3 dibaca...", options: ["Satu tiga", "Satu per tiga", "Tiga per satu", "Tiga satu"], answer: 1, explanation: "1/3 dibaca satu per tiga atau sepertiga." },
+            { q: "Pecahan setengah ditulis dengan lambang...", options: ["1/3", "1/4", "1/2", "2/1"], answer: 2, explanation: "Setengah lambangnya 1/2." },
+            { q: "Pecahan 1/4 sering juga disebut...", options: ["Setengah", "Sepertiga", "Seperempat", "Sepuluh"], answer: 2, explanation: "1/4 disebut seperempat." },
+            { q: "Ibu memotong roti menjadi 3 bagian sama besar. Siti makan 1 bagian. Bagian yang dimakan Siti bernilai...", options: ["1/2", "1/3", "1/4", "3/1"], answer: 1, explanation: "1 bagian dari 3 potongan adalah 1/3." },
+            { q: "Pada pecahan 1/2, angka 1 disebut...", options: ["Pembilang", "Penyebut", "Pembagi", "Hasil"], answer: 0, explanation: "Angka atas = pembilang, angka bawah = penyebut." },
+            { q: "Pada pecahan 1/4, angka 4 disebut...", options: ["Pembilang", "Penyebut", "Sisa", "Jumlah"], answer: 1, explanation: "Angka bawah pada pecahan disebut penyebut." },
+            { q: "Manakah nilai pecahan yang paling besar?", options: ["1/4", "1/3", "1/2", "Semua sama"], answer: 2, explanation: "1/2 (setengah) lebih besar dari 1/3 dan 1/4." },
+            { q: "Satu benda utuh dibagi 2 sama besar, tiap bagian dinamakan...", options: ["Seperempat", "Setengah", "Sepertiga", "Sebagian"], answer: 1, explanation: "Dibagi 2 bagian sama besar dinamakan setengah." },
+
+            // Variasi Soal Tambahan Kurikulum SD 2
+            { q: "25 + 25 + 25 = ...", options: ["65", "70", "75", "80"], answer: 2, explanation: "25 + 25 = 50, 50 + 25 = 75." },
+            { q: "100 - 45 = ...", options: ["55", "65", "45", "50"], answer: 0, explanation: "100 - 45 = 55." },
+            { q: "Berapa jumlah hari dalam 1 minggu?", options: ["5 hari", "6 hari", "7 hari", "30 hari"], answer: 2, explanation: "1 minggu = 7 hari (Senin-Minggu)." },
+            { q: "Berapa jumlah bulan dalam 1 tahun?", options: ["10 bulan", "11 bulan", "12 bulan", "14 bulan"], answer: 2, explanation: "1 tahun = 12 bulan." },
+            { q: "Hari setelah hari Selasa adalah hari...", options: ["Senin", "Rabu", "Kamis", "Jumat"], answer: 1, explanation: "Urutan: Senin, Selasa, Rabu." },
+            { q: "Dua hari sebelum hari Kamis adalah hari...", options: ["Senin", "Selasa", "Rabu", "Jumat"], answer: 1, explanation: "Kamis -> Rabu (1 hari) -> Selasa (2 hari)." },
+            { q: "8 x 2 = ...", options: ["14", "16", "18", "20"], answer: 1, explanation: "8 x 2 = 16." },
+            { q: "24 : 3 = ...", options: ["7", "8", "9", "6"], answer: 1, explanation: "24 : 3 = 8." },
+            { q: "35 + 15 - 10 = ...", options: ["40", "30", "50", "45"], answer: 0, explanation: "35 + 15 = 50, lalu 50 - 10 = 40." },
+            { q: "Hasil dari 50 : 5 = ...", options: ["5", "8", "10", "15"], answer: 2, explanation: "50 : 5 = 10." },
+            { q: "Angka ratusan dari 941 adalah...", options: ["1", "4", "9", "90"], answer: 2, explanation: "Angka 9 bernilai 900 (ratusan)." },
+            { q: "15 + ... = 40", options: ["20", "25", "30", "35"], answer: 1, explanation: "40 - 15 = 25." },
+            { q: "50 - ... = 22", options: ["28", "38", "18", "22"], answer: 0, explanation: "50 - 22 = 28." },
+            { q: "7 x 3 = ...", options: ["21", "24", "18", "27"], answer: 0, explanation: "7 x 3 = 21." },
+            { q: "9 x 2 = ...", options: ["16", "18", "20", "22"], answer: 1, explanation: "9 x 2 = 18." },
+            { q: "27 : 3 = ...", options: ["7", "8", "9", "10"], answer: 2, explanation: "27 : 3 = 9." },
+            { q: "Bangun datar persegi memiliki pasang sisi yang paralel sebanyak...", options: ["1 pasang", "2 pasang", "3 pasang", "Tidak ada"], answer: 1, explanation: "Sisi atas-bawah dan sisi kiri-kanan." },
+            { q: "Jumlah uang 1 lembar Rp2.000 + 1 lembar Rp5.000 adalah...", options: ["Rp6.000", "Rp7.000", "Rp8.000", "Rp10.000"], answer: 1, explanation: "2.000 + 5.000 = Rp7.000." },
+            { q: "Tiga lembar uang Rp1.000 nilainya sama dengan...", options: ["Rp2.000", "Rp3.000", "Rp4.000", "Rp5.000"], answer: 1, explanation: "3 x 1.000 = Rp3.000." },
+            { q: "Ibu punya uang Rp10.000, jeli seharga Rp4.000. Kembaliannya adalah...", options: ["Rp4.000", "Rp5.000", "Rp6.000", "Rp7.000"], answer: 2, explanation: "10.000 - 4.000 = Rp6.000." }
+        ];
+
+        // STATE VARIABEL KUIS
+        let currentQuizQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let timerInterval = null;
+        let timeLeft = 30;
+        let studentName = "";
+
+        // FUNGSIONALITAS PENGACAKAN (Fisher-Yates Shuffle)
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // VALIDASI NAMA SEBELUM MULAI
+        function startQuizWithValidation() {
+            const nameInput = document.getElementById('student-name');
+            const nameError = document.getElementById('name-error');
+            const val = nameInput.value.trim();
+
+            if (!val) {
+                nameError.classList.remove('hidden');
+                nameInput.focus();
+                return;
+            }
+
+            nameError.classList.add('hidden');
+            studentName = val;
+            initiateNewQuiz();
+        }
+
+        // MEMULAI KUIS BARU
+        function initiateNewQuiz() {
+            // Pick 10 random questions from 100 bank soal
+            const shuffled = shuffleArray(bankSoal);
+            currentQuizQuestions = shuffled.slice(0, 10);
+
+            // Reset State
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+
+            // UI Transitions
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+
+            loadQuestion();
+        }
+
+        // MEMUAT SOAL BERDASARKAN INDEX
+        function loadQuestion() {
+            clearInterval(timerInterval);
+            timeLeft = 30;
+            updateTimerDisplay();
+
+            const currentQ = currentQuizQuestions[currentQuestionIndex];
+            
+            // Progress Bar & Tracker
+            document.getElementById('question-tracker').innerText = `Soal ${currentQuestionIndex + 1} dari 10`;
+            const progressPercent = ((currentQuestionIndex + 1) / 10) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            // Teks Soal
+            document.getElementById('question-text').innerText = currentQ.q;
+
+            // Reset Opsi & Feedback
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            document.getElementById('feedback-box').classList.add('hidden');
+
+            const prefixes = ['A', 'B', 'C', 'D'];
+            
+            currentQ.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `btn-option w-full p-4 text-left rounded-2xl border-2 border-gray-200 bg-white hover:border-indigo-400 font-semibold text-gray-700 flex items-center justify-between text-sm md:text-base cursor-pointer shadow-sm`;
+                btn.onclick = () => selectAnswer(idx);
+                
+                btn.innerHTML = `
+                    <div class="flex items-center">
+                        <span class="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600 font-bold flex items-center justify-center mr-3 text-sm shrink-0">
+                            ${prefixes[idx]}
+                        </span>
+                        <span>${opt}</span>
+                    </div>
+                    <i class="fa-regular fa-circle text-gray-300 option-icon"></i>
+                `;
+                container.appendChild(btn);
+            });
+
+            // Jalankan Timer 30 detik
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById('timer-display');
+            timerEl.innerHTML = `<i class="fa-regular fa-clock mr-1.5"></i> ${timeLeft}s`;
+            if (timeLeft <= 5) {
+                timerEl.className = "flex items-center text-red-600 bg-red-50 px-3 py-1 rounded-full text-xs font-bold border border-red-200 animate-pulse";
+            } else {
+                timerEl.className = "flex items-center text-amber-600 bg-amber-50 px-3 py-1 rounded-full text-xs font-semibold border border-amber-200";
+            }
+        }
+
+        function handleTimeout() {
+            // Ketika waktu habis, anggap salah (-1)
+            selectAnswer(-1, true);
+        }
+
+        // MEMILIH JAWABAN
+        function selectAnswer(selectedIndex, isTimeout = false) {
+            clearInterval(timerInterval);
+            const currentQ = currentQuizQuestions[currentQuestionIndex];
+            const isCorrect = selectedIndex === currentQ.answer;
+
+            // Simpan riwayat jawaban
+            userAnswers.push({
+                question: currentQ.q,
+                userChoice: selectedIndex,
+                correctChoice: currentQ.answer,
+                options: currentQ.options,
+                explanation: currentQ.explanation,
+                isCorrect: isCorrect
+            });
+
+            if (isCorrect) score += 10;
+
+            // Disable semua tombol opsi
+            const buttons = document.querySelectorAll('.btn-option');
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.remove('hover:border-indigo-400');
+                
+                if (idx === currentQ.answer) {
+                    btn.classList.remove('border-gray-200', 'bg-white');
+                    btn.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-900');
+                    btn.querySelector('.option-icon').className = 'fa-solid fa-circle-check text-emerald-600 text-lg';
+                } else if (idx === selectedIndex && !isCorrect) {
+                    btn.classList.remove('border-gray-200', 'bg-white');
+                    btn.classList.add('border-red-400', 'bg-red-50', 'text-red-900');
+                    btn.querySelector('.option-icon').className = 'fa-solid fa-circle-xmark text-red-500 text-lg';
+                }
+            });
+
+            // Tampilkan Feedback Box
+            const feedbackBox = document.getElementById('feedback-box');
+            const feedbackText = document.getElementById('feedback-text');
+            feedbackBox.classList.remove('hidden');
+
+            if (isCorrect) {
+                feedbackBox.className = "p-4 rounded-2xl flex items-center justify-between text-sm font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                feedbackText.innerHTML = `<i class="fa-solid fa-circle-check text-xl mr-2.5 text-emerald-600"></i> Jawabanmu Benar! Great job! 🎉`;
+            } else if (isTimeout) {
+                feedbackBox.className = "p-4 rounded-2xl flex items-center justify-between text-sm font-bold bg-amber-100 text-amber-800 border border-amber-300";
+                feedbackText.innerHTML = `<i class="fa-solid fa-hourglass-end text-xl mr-2.5 text-amber-600"></i> Waktu Habis! Jawaban benar: <b>${currentQ.options[currentQ.answer]}</b>`;
+            } else {
+                feedbackBox.className = "p-4 rounded-2xl flex items-center justify-between text-sm font-bold bg-red-100 text-red-800 border border-red-300";
+                feedbackText.innerHTML = `<i class="fa-solid fa-circle-xmark text-xl mr-2.5 text-red-500"></i> Kurang Tepat! Jawaban benar: <b>${currentQ.options[currentQ.answer]}</b>`;
+            }
+        }
+
+        // LANJUT SOAL BERIKUTNYA
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < 10) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // MENAMPILKAN RESULT SCREEN
+        function showResults() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            document.getElementById('display-name').innerText = studentName;
+            document.getElementById('final-score').innerText = score;
+
+            // Pesan Hasil
+            const scoreMsg = document.getElementById('score-message');
+            if (score === 100) {
+                scoreMsg.innerText = "Luar Biasa! Nilai Sempurna! 🌟🏆";
+                triggerConfetti();
+            } else if (score >= 70) {
+                scoreMsg.innerText = "Hebat Sekali! Kamu Sangat Pintar! 👏";
+                triggerConfetti();
+            } else if (score >= 50) {
+                scoreMsg.innerText = "Bagus! Teruslah Berlatih Ya! 💪";
+            } else {
+                scoreMsg.innerText = "Jangan Patah Semangat, Ayo Coba Lagi! 📚";
+            }
+
+            // Render daftar pembahasan
+            renderReviewList();
+        }
+
+        // RENDER PEMBAHASAN HASIL SOAL
+        function renderReviewList() {
+            const listContainer = document.getElementById('review-list');
+            listContainer.innerHTML = '';
+
+            userAnswers.forEach((ans, idx) => {
+                const item = document.createElement('div');
+                item.className = `p-4 rounded-2xl border ${ans.isCorrect ? 'bg-emerald-50/60 border-emerald-200' : 'bg-red-50/60 border-red-200'} text-xs md:text-sm space-y-1.5`;
+
+                const userChoiceText = ans.userChoice >= 0 ? ans.options[ans.userChoice] : "Waktu Habis";
+                const correctText = ans.options[ans.correctChoice];
+
+                item.innerHTML = `
+                    <div class="font-bold text-gray-800 flex items-start justify-between">
+                        <span>${idx + 1}. ${ans.question}</span>
+                        <span class="${ans.isCorrect ? 'text-emerald-600' : 'text-red-500'} font-black ml-2 shrink-0">
+                            ${ans.isCorrect ? '✓ Benar (+10)' : '✗ Salah (0)'}
+                        </span>
+                    </div>
+                    <div class="text-gray-600">
+                        <span>Jawaban Kamu: <b class="${ans.isCorrect ? 'text-emerald-700' : 'text-red-600'}">${userChoiceText}</b></span>
+                        ${!ans.isCorrect ? `<span class="ml-2">| Benar: <b class="text-emerald-700">${correctText}</b></span>` : ''}
+                    </div>
+                    <div class="text-indigo-900 bg-white/80 p-2 rounded-xl border border-indigo-100 mt-1 italic">
+                        <b>Pembahasan:</b> ${ans.explanation}
+                    </div>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        // TOGGLE HIDE/SHOW REVIEW
+        function toggleReview() {
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.classList.toggle('hidden');
+        }
+
+        // FITUR SOAL BARU (PLAY AGAIN WITH 10 NEW RANDOM QUESTIONS)
+        function startNewQuizRound() {
+            document.getElementById('review-container').classList.add('hidden');
+            initiateNewQuiz();
+        }
+
+        // EFEK SELEBRASI CONFETTI
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
